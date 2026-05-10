@@ -8,6 +8,22 @@ export function AdminLoginForm() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  async function readResponseMessage(response: Response) {
+    const text = await response.text();
+
+    if (!text) {
+      return "Unable to sign in.";
+    }
+
+    try {
+      const result = JSON.parse(text) as { message?: string };
+
+      return result.message || "Unable to sign in.";
+    } catch {
+      return "The server returned an invalid response.";
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -20,10 +36,9 @@ export function AdminLoginForm() {
         method: "POST",
         body: new FormData(form),
       });
-      const result = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error(result.message || "Unable to sign in.");
+        throw new Error(await readResponseMessage(response));
       }
 
       router.push("/admin/dashboard");
