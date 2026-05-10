@@ -320,24 +320,25 @@ button:focus-visible {
 }
 
 .status-modal {
-  width: min(440px, 100%);
+  width: min(420px, 100%);
   border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 34px 30px 28px;
   text-align: center;
   box-shadow: var(--panel-shadow);
   backdrop-filter: blur(18px);
 }
 
 .modal-status-mark {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  margin: 0 auto 18px;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
   border-radius: 50%;
-  font-size: 0.9rem;
+  font-size: 1.35rem;
   font-weight: 900;
 }
 
@@ -346,19 +347,30 @@ button:focus-visible {
   color: var(--success-text);
 }
 
+.status-modal.success .modal-status-mark::before {
+  content: "";
+  width: 18px;
+  height: 10px;
+  border-bottom: 3px solid currentColor;
+  border-left: 3px solid currentColor;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
 .status-modal.error .modal-status-mark {
   background: var(--error-bg);
   color: var(--error-text);
 }
 
 .status-modal h2 {
-  margin-bottom: 10px;
-  font-size: 1.35rem;
+  margin-bottom: 12px;
+  font-size: 1.45rem;
   line-height: 1.25;
+  font-weight: 760;
 }
 
 .status-modal p {
-  margin-bottom: 22px;
+  margin: 0 auto 26px;
+  max-width: 340px;
   color: var(--muted);
   line-height: 1.55;
 }
@@ -371,6 +383,10 @@ button:focus-visible {
 .status-modal.error p {
   color: var(--error-text);
   font-weight: 700;
+}
+
+.status-modal button {
+  min-width: 152px;
 }
 
 .admin-auth-page {

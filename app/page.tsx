@@ -269,7 +269,7 @@ export default function Home() {
             role="dialog"
           >
             <div className="modal-status-mark" aria-hidden="true">
-              {submitStatus.type === "success" ? "OK" : "!"}
+              {submitStatus.type === "success" ? null : "!"}
             </div>
             <h2 id="submit-modal-title">
               {submitStatus.type === "success"
