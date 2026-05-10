@@ -3,9 +3,13 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function AdminLoginForm() {
+export function AdminLoginForm({
+  initialMessage = "",
+}: {
+  initialMessage?: string;
+}) {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function readResponseMessage(response: Response) {
@@ -53,7 +57,12 @@ export function AdminLoginForm() {
   }
 
   return (
-    <form className="admin-login-form" onSubmit={handleSubmit}>
+    <form
+      action="/api/admin/login"
+      className="admin-login-form"
+      method="post"
+      onSubmit={handleSubmit}
+    >
       {message ? <p className="admin-form-error">{message}</p> : null}
 
       <label>
