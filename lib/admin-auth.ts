@@ -29,6 +29,14 @@ function sessionSecret() {
   return secret;
 }
 
+export function shouldUseSecureAdminCookie() {
+  if (process.env.ADMIN_COOKIE_SECURE === "false") {
+    return false;
+  }
+
+  return process.env.NODE_ENV === "production";
+}
+
 function base64Url(input: string) {
   return Buffer.from(input).toString("base64url");
 }

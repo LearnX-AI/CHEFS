@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   adminSessionCookieName,
   createAdminSessionToken,
+  shouldUseSecureAdminCookie,
   verifyPassword,
 } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
     value: createAdminSessionToken(admin.id, admin.username),
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureAdminCookie(),
     maxAge: 60 * 60 * 8,
     path: "/",
   });

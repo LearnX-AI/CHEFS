@@ -21,6 +21,7 @@ CREATE DATABASE chef_registration;
 ```bash
 DATABASE_URL="mysql://root:password@localhost:3306/chef_registration"
 ADMIN_SESSION_SECRET="replace-with-at-least-32-random-characters"
+ADMIN_COOKIE_SECURE="false"
 AWS_REGION="ap-southeast-2"
 AWS_ACCESS_KEY_ID="your-access-key-id"
 AWS_SECRET_ACCESS_KEY="your-secret-access-key"
@@ -71,3 +72,5 @@ To change the password from the app:
 5. Enter the current password and the new password.
 
 Only signed-in admins can access the change password page or API.
+
+When testing production over plain HTTP, set `ADMIN_COOKIE_SECURE="false"` so the browser can store the admin session cookie. When the site is behind HTTPS, remove that value or set it to `true`.

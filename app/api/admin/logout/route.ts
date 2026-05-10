@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { adminSessionCookieName } from "@/lib/admin-auth";
+import {
+  adminSessionCookieName,
+  shouldUseSecureAdminCookie,
+} from "@/lib/admin-auth";
 
 export async function POST() {
   const response = NextResponse.json({ message: "Signed out successfully." });
@@ -9,7 +12,7 @@ export async function POST() {
     value: "",
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureAdminCookie(),
     maxAge: 0,
     path: "/",
   });
