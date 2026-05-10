@@ -14,6 +14,12 @@ export function s3BucketName() {
   return requireEnv("S3_BUCKET_NAME");
 }
 
+function receiptPrefix() {
+  const prefix = process.env.S3_RECEIPT_PREFIX || "CHEFS";
+
+  return prefix.replace(/^\/+|\/+$/g, "");
+}
+
 export function s3Client() {
   return new S3Client({
     region: requireEnv("AWS_REGION"),
@@ -21,5 +27,5 @@ export function s3Client() {
 }
 
 export function receiptObjectKey(fileName: string) {
-  return `registration-receipts/${fileName}`;
+  return `${receiptPrefix()}/${fileName}`;
 }

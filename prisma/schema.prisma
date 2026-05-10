@@ -21,8 +21,8 @@ model Registration {
   studentEmail       String   @map("student_email")
   feeStatus          String   @map("fee_status")
   helpLoanAmount     Decimal? @map("help_loan_amount") @db.Decimal(10, 2)
-  receiptStoragePath String?  @map("receipt_storage_path")
-  receiptFileName    String?  @map("receipt_file_name")
+  receiptStoragePath String?  @map("receipt_storage_path") @db.Text
+  receiptFileName    String?  @map("receipt_file_name") @db.Text
   receiptContentType String?  @map("receipt_content_type")
   consentAccepted    Boolean  @default(true) @map("consent_accepted")
   submittedAt        DateTime @default(now()) @map("submitted_at")

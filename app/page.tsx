@@ -8,6 +8,26 @@ type SubmitStatus = {
   message: string;
 };
 
+async function responseJson(response: Response) {
+  const text = await response.text();
+
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text) as {
+      id?: string;
+      referenceId?: string;
+      message?: string;
+    };
+  } catch {
+    return {
+      message: "The server returned an invalid response. Please try again.",
+    };
+  }
+}
+
 export default function Home() {
   const [feeStatus, setFeeStatus] = useState<FeeStatus>("");
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus | null>(null);
@@ -30,11 +50,7 @@ export default function Home() {
         method: "POST",
         body: new FormData(form),
       });
-      const result = (await response.json()) as {
-        id?: string;
-        referenceId?: string;
-        message?: string;
-      };
+      const result = await responseJson(response);
 
       if (!response.ok) {
         throw new Error(result.message || "Unable to save registration.");

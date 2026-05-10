@@ -21,10 +21,11 @@ CREATE DATABASE chef_registration;
 ```bash
 DATABASE_URL="mysql://root:password@localhost:3306/chef_registration"
 ADMIN_SESSION_SECRET="replace-with-at-least-32-random-characters"
-AWS_REGION="ap-southeast-1"
+AWS_REGION="ap-southeast-2"
 AWS_ACCESS_KEY_ID="your-access-key-id"
 AWS_SECRET_ACCESS_KEY="your-secret-access-key"
-S3_BUCKET_NAME="chef-registration-receipts"
+S3_BUCKET_NAME="wpu-student-registration-2026"
+S3_RECEIPT_PREFIX="CHEFS"
 ```
 
 4. Apply the SQL migration:
@@ -39,7 +40,7 @@ npm run db:migrate
 npm run dev
 ```
 
-The registration API writes form data to the `registrations` SQL table. Uploaded receipts are saved in a private S3 bucket, and the database stores the S3 object key plus receipt metadata.
+The registration API writes form data to the `registrations` SQL table. Uploaded receipts are saved in the private S3 prefix `CHEFS/`, and the database stores the S3 object key plus receipt metadata.
 
 The S3 bucket should stay private. Give the app credentials only the permissions it needs for the receipt bucket:
 

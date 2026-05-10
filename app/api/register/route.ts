@@ -12,11 +12,29 @@ function field(formData: FormData, name: string) {
 }
 
 function cleanFileName(fileName: string) {
-  return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const cleaned = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+  if (cleaned.length <= 110) {
+    return cleaned;
+  }
+
+  const extensionIndex = cleaned.lastIndexOf(".");
+  const extension = extensionIndex > -1 ? cleaned.slice(extensionIndex) : "";
+  const baseName = extensionIndex > -1 ? cleaned.slice(0, extensionIndex) : cleaned;
+
+  return `${baseName.slice(0, 110 - extension.length)}${extension}`;
 }
 
 function createReferenceId() {
   return `CHEFS-2026-${randomBytes(4).toString("hex").toUpperCase()}`;
+}
+
+function s3ErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return `Unable to upload the receipt to S3. AWS error: ${error.name}.`;
+  }
+
+  return "Unable to upload the receipt to S3. Please check the S3 credentials and bucket permissions.";
 }
 
 export async function POST(request: Request) {
@@ -116,38 +134,56 @@ export async function POST(request: Request) {
     receiptStoragePath = receiptObjectKey(fileName);
     const buffer = Buffer.from(await receipt.arrayBuffer());
 
-    await s3Client().send(
-      new PutObjectCommand({
-        Bucket: s3BucketName(),
-        Key: receiptStoragePath,
-        Body: buffer,
-        ContentType: receiptContentType,
-        Metadata: {
-          registrationId: id,
-          originalFileName: receiptFileName,
-        },
-      }),
-    );
+    try {
+      await s3Client().send(
+        new PutObjectCommand({
+          Bucket: s3BucketName(),
+          Key: receiptStoragePath,
+          Body: buffer,
+          ContentType: receiptContentType,
+          Metadata: {
+            registrationId: id,
+            originalFileName: receiptFileName,
+          },
+        }),
+      );
+    } catch (error) {
+      console.error("Unable to upload receipt to S3", error);
+
+      return NextResponse.json(
+        { message: s3ErrorMessage(error) },
+        { status: 500 },
+      );
+    }
   }
 
-  await prisma.registration.create({
-    data: {
-      id,
-      referenceId,
-      firstName,
-      surname,
-      gender,
-      mobileNumber,
-      studentId,
-      studentEmail,
-      feeStatus,
-      helpLoanAmount: normalizedHelpLoanAmount,
-      receiptStoragePath,
-      receiptFileName,
-      receiptContentType,
-      consentAccepted: true,
-    },
-  });
+  try {
+    await prisma.registration.create({
+      data: {
+        id,
+        referenceId,
+        firstName,
+        surname,
+        gender,
+        mobileNumber,
+        studentId,
+        studentEmail,
+        feeStatus,
+        helpLoanAmount: normalizedHelpLoanAmount,
+        receiptStoragePath,
+        receiptFileName,
+        receiptContentType,
+        consentAccepted: true,
+      },
+    });
+  } catch (error) {
+    console.error("Unable to save registration", error);
+
+    return NextResponse.json(
+      { message: "Unable to save registration. Please try again." },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({
     id,
