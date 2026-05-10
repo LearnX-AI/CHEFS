@@ -248,12 +248,17 @@ export function AdminDashboard({ username }: { username: string }) {
               </dl>
 
               {registration.hasReceipt ? (
-                <a
-                  className="receipt-link"
-                  href={`/api/admin/receipts/${registration.id}`}
-                >
-                  Download {registration.receiptFileName || "receipt"}
-                </a>
+                <div className="receipt-action">
+                  <a
+                    className="receipt-link"
+                    href={`/api/admin/receipts/${registration.id}`}
+                  >
+                    Download Receipt
+                  </a>
+                  {registration.receiptFileName ? (
+                    <small>{registration.receiptFileName}</small>
+                  ) : null}
+                </div>
               ) : (
                 <span className="no-receipt">No receipt uploaded</span>
               )}

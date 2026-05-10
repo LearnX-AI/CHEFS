@@ -770,6 +770,18 @@ button:focus-visible {
   font-weight: 700;
 }
 
+.receipt-action {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.receipt-action small {
+  max-width: min(680px, 100%);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
 .receipt-link {
   background: var(--accent);
   color: #ffffff;
@@ -886,5 +898,9 @@ button:focus-visible {
   .no-receipt {
     width: 100%;
     text-align: center;
+  }
+
+  .receipt-action {
+    justify-items: stretch;
   }
 }
